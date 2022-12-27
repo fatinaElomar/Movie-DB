@@ -44,7 +44,7 @@ const movies = [
 //movie read
 app.get("/movies/read", (req, res) => {
   data = req.params;
-  res.json({ status: 200, data:movies});
+  res.json({ status: 200, data: movies });
 });
 
 //movie creat
@@ -67,6 +67,40 @@ app.get("/movies/add", (req, res) => {});
 app.get("/movies/edit", (req, res) => {});
 //movies get
 app.get("/movies/get", (req, res) => {});
+
+app.get("/movies/read/by-date", (req, res) => {
+  res.send({
+    status: 200,
+    //"the list of movies order it by year release  ",
+    data: movies.sort((d1, d2) => !d1.year - d2.year),
+  });
+});
+
+app.get("/movies/read/by-rating", (req, res) => {
+  res.send({
+    //the list of movies  start from hight rating
+    status: 200,
+    data: movies.sort((r1, r2) => !r1.rating - r2.rating),
+  });
+});
+
+app.get("/movies/read/by-title", (req, res) => {
+  moviestitle = movies.sort((t1, t2) => {
+    //the list of movies  sort by alphabet order
+
+    if (t1.title < t2.title) {
+      return -1;
+    }
+    if (t1.title > t2.title) {
+      return 1;
+    }
+    return 0;
+  });
+  res.send({
+    status: 200,
+    data: moviestitle,
+  });
+});
 
 app.listen(path, () => {
   console.log(`the app listening on path at http://localhost:${path}`);
