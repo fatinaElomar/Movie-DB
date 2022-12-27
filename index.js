@@ -35,11 +35,11 @@ app.get("/search", (req, res) => {
 });
 
 const movies = [
-  { title: "Cruella", year: 2021, rating: 7.3, genre: "Comedy/Crime" },
-  { title: "Aquaman", year: 2019, rating: 7.8, genre: "action" },
-  { title: "Spider-Man", year: 2019, rating: 8, genre: "action" },
-  { title: "Enola Holmes1", year: 2020, rating: 8, genre: "Mystery/Crime" },
-  { title: "Enola Holmes2", year: 2022, rating: 9, genre: "Mystery/Crime" },
+  { title: "Cruella", year: 2021, rating: 7.3, genre: "Comedy/Crime" ,id:1 },
+  { title: "Aquaman", year: 2019, rating: 7.8, genre: "action" ,id:2},
+  { title: "Spider-Man", year: 2019, rating: 8, genre: "action",id:3},
+  { title: "Enola Holmes1", year: 2020, rating: 8, genre: "Mystery/Crime",id:4},
+  { title: "Enola Holmes2", year: 2022, rating: 9, genre: "Mystery/Crime" , id:5},
 ];
 //movie read
 app.get("/movies/read", (req, res) => {
@@ -102,6 +102,22 @@ app.get("/movies/read/by-title", (req, res) => {
   });
 });
 
+
+
+app.get('/movies/read/id/:ID', function (req, res) {
+    let { ID } = req.params;
+    let movie = movies.find(item => item.id == ID);
+    let showmovie = "";
+    if (showmovie = movie) {
+    res.send({ status: 200, data: movie });
+  }
+    else{
+      (showmovie != movie)  
+     return res.json({
+        status: 404, error: true, message: 'the movie ID does not exist'
+    });
+    
+}});
 app.listen(path, () => {
   console.log(`the app listening on path at http://localhost:${path}`);
 });
