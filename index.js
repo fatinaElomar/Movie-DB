@@ -35,11 +35,23 @@ app.get("/search", (req, res) => {
 });
 
 const movies = [
-  { title: "Cruella", year: 2021, rating: 7.3, genre: "Comedy/Crime" ,id:1 },
-  { title: "Aquaman", year: 2019, rating: 7.8, genre: "action" ,id:2},
-  { title: "Spider-Man", year: 2019, rating: 8, genre: "action",id:3},
-  { title: "Enola Holmes1", year: 2020, rating: 8, genre: "Mystery/Crime",id:4},
-  { title: "Enola Holmes2", year: 2022, rating: 9, genre: "Mystery/Crime" , id:5},
+  { title: "Cruella", year: 2021, rating: 7.3, genre: "Comedy/Crime", id: 1 },
+  { title: "Aquaman", year: 2019, rating: 7.8, genre: "action", id: 2 },
+  { title: "Spider-Man", year: 2019, rating: 8, genre: "action", id: 3 },
+  {
+    title: "Enola Holmes1",
+    year: 2020,
+    rating: 8,
+    genre: "Mystery/Crime",
+    id: 4,
+  },
+  {
+    title: "Enola Holmes2",
+    year: 2022,
+    rating: 9,
+    genre: "Mystery/Crime",
+    id: 5,
+  },
 ];
 //movie read
 app.get("/movies/read", (req, res) => {
@@ -58,10 +70,52 @@ app.get("/movies/update", (req, res) => {
 });
 
 //movie delete
-app.get("/movies/delete", (req, res) => {});
+app.get("/movies/delete/:ID", (req, res) => {
+  data = req.params;
+  var found = false;
+  for (var i = 0; i < movies.length; i++) {
+    if (data.ID == movies[i].id) {
+      found = true;
+      var index = i;
+    }
+  }
+  if (found) {
+    movies.splice(index, 1);
+    res.send({ status: 200, data: movies });
+  } else {
+    res.send({
+      status: 404,
+      error: true,
+      message: `the movie ${data.ID} does not exist`,
+    });
+  }
+});
 
 //movies add
-app.get("/movies/add", (req, res) => {});
+app.get("/movies/add", (req, res) => {
+  let title1 = req.query.title;
+  let year1 = req.query.year;
+  let rating1 = req.query.rating || 4;
+  if (
+    title1 === "" ||
+    title1 !== undefined ||
+    typeof year1 == number ||
+    year1.toString().length === 4 ||
+    (year1 >= 2000 && year1 <= 2023)
+  ) {
+    movies.push({ title1, year1, rating1 });
+    res.send({
+      status: 200,
+      data: movies,
+    });
+  } else {
+    res.send({
+      status: 403,
+      error: true,
+      message: "you cannot create a movie without providing a title and a year",
+    });
+  }
+});
 
 //movies edit
 app.get("/movies/edit", (req, res) => {});
@@ -102,43 +156,21 @@ app.get("/movies/read/by-title", (req, res) => {
   });
 });
 
-
-
-app.get('/movies/read/id/:ID', function (req, res) {
-    let { ID } = req.params;
-    let movie = movies.find(item => item.id == ID);
-    let showmovie = "";
-    if (showmovie = movie) {
+app.get("/movies/read/id/:ID", function (req, res) {
+  let { ID } = req.params;
+  let movie = movies.find((item) => item.id == ID);
+  let showmovie = "";
+  if ((showmovie = movie)) {
     res.send({ status: 200, data: movie });
+  } else {
+    showmovie != movie;
+    return res.json({
+      status: 404,
+      error: true,
+      message: "the movie ID does not exist",
+    });
   }
-    else{
-      (showmovie != movie)  
-     return res.json({
-        status: 404, error: true, message: 'the movie ID does not exist'}
-     )};
-  });
-    
-
-  app.get('/movies/add', (req, res) => {
-    let title1 = req.query.title
-    let year1 = req.query.year
-    let rating1 = req.query.rating || 4
-    if ((title1 === "" || title1 !== undefined) ||
-        ((typeof year1 == "number" || year1.toString().length === 4) || year1 >= 2000 && year1 <= 2023)) {
-        movies.push({ title1, year1, rating1 })
-        res.send(
-            {
-                status: 200,
-                data: movies
-            }
-        )
-    } else {
-        res.send({ status: 403, error: true, message: 'you cannot create a movie without providing a title and a year' })
-    }
-
 });
-
-
 
 app.listen(path, () => {
   console.log(`the app listening on path at http://localhost:${path}`);
