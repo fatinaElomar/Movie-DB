@@ -23,7 +23,7 @@ app.get("/hello/:ID", (req, res) => {
 
 app.get("/search", (req, res) => {
   const search = req.query.s;
-  if (typeof search == "undefined" || search === "") {
+  if (typeof search == undefined || search === "") {
     res.send({
       status: 500,
       error: true,
@@ -114,10 +114,32 @@ app.get('/movies/read/id/:ID', function (req, res) {
     else{
       (showmovie != movie)  
      return res.json({
-        status: 404, error: true, message: 'the movie ID does not exist'
-    });
+        status: 404, error: true, message: 'the movie ID does not exist'}
+     )};
+  });
     
-}});
+
+  app.get('/movies/add', (req, res) => {
+    let title1 = req.query.title
+    let year1 = req.query.year
+    let rating1 = req.query.rating || 4
+    if ((title1 === "" || title1 !== undefined) ||
+        ((typeof year1 == "number" || year1.toString().length === 4) || year1 >= 2000 && year1 <= 2023)) {
+        movies.push({ title1, year1, rating1 })
+        res.send(
+            {
+                status: 200,
+                data: movies
+            }
+        )
+    } else {
+        res.send({ status: 403, error: true, message: 'you cannot create a movie without providing a title and a year' })
+    }
+
+});
+
+
+
 app.listen(path, () => {
   console.log(`the app listening on path at http://localhost:${path}`);
 });
