@@ -65,9 +65,29 @@ app.get("/movies/create", (req, res) => {
 });
 
 //movie update
-app.get("/movies/update", (req, res) => {
-  res.send({ message: "Hello, " });
-});
+app.get("/movies/update/:ID", (req, res) => {
+  data = req.params;
+  newTitle = req.query.title
+  newYear = req.query.year
+  newRating =req.query.rating
+  let index
+  let doIt = false;
+  for(var i = 0; i < movies.length; i++){
+    if(data.ID == movies[i].id){
+      doIt = true;
+      index= i;
+    }
+  }
+  if (doIt){
+     movies[index].title = newTitle
+     movies[index].year = newYear
+     movies[index].rating = newRating
+    res.send({status:200, data:movies})
+  }else {
+    res.send({status:404, error:true, message:`the movie ${data.ID} does not exist`})
+  }
+
+  })
 
 //movie delete
 app.get("/movies/delete/:ID", (req, res) => {
