@@ -53,44 +53,45 @@ const movies = [
     id: 5,
   },
 ];
-//movie read
+//movie read/get
 app.get("/movies/read", (req, res) => {
   data = req.params;
   res.json({ status: 200, data: movies });
 });
 
-//movie creat
-app.get("/movies/create", (req, res) => {
-  res.send({ message: "Hello" });
-});
-
-//movie update
-app.get("/movies/update/:ID", (req, res) => {
+//movie update/edit
+app.put("/movies/edit/:ID", (req, res) => {
   data = req.params;
-  newTitle = req.query.title
-  newYear = req.query.year
-  newRating =req.query.rating
-  let index
+  newTitle = req.query.title;
+  newYear = req.query.year;
+  newRating = req.query.rating;
+  newgenre = req.query.genre;
+  let index;
   let doIt = false;
-  for(var i = 0; i < movies.length; i++){
-    if(data.ID == movies[i].id){
+  for (var i = 0; i < movies.length; i++) {
+    if (data.ID == movies[i].id) {
       doIt = true;
-      index= i;
+      index = i;
     }
   }
-  if (doIt){
-     movies[index].title = newTitle
-     movies[index].year = newYear
-     movies[index].rating = newRating
-    res.send({status:200, data:movies})
-  }else {
-    res.send({status:404, error:true, message:`the movie ${data.ID} does not exist`})
-  }
+  if (doIt) {
+    if (newTitle) movies[index].title = newTitle;
+    if (newYear) movies[index].year = newYear;
+    if (newRating) movies[index].rating = newRating;
+    if (newgenre) movies[index].genre = newgenre;
 
-  })
+    res.send({ status: 200, data: movies });
+  } else {
+    res.send({
+      status: 404,
+      error: true,
+      message: `the movie ${data.ID} does not exist`,
+    });
+  }
+});
 
 //movie delete
-app.get("/movies/delete/:ID", (req, res) => {
+app.delete("/movies/delete/:ID", (req, res) => {
   data = req.params;
   var found = false;
   for (var i = 0; i < movies.length; i++) {
@@ -111,8 +112,8 @@ app.get("/movies/delete/:ID", (req, res) => {
   }
 });
 
-//movies add
-app.get("/movies/add", (req, res) => {
+//movies add/creat
+app.post("/movies/add", (req, res) => {
   let title1 = req.query.title;
   let year1 = req.query.year;
   let rating1 = req.query.rating || 4;
@@ -137,12 +138,7 @@ app.get("/movies/add", (req, res) => {
   }
 });
 
-//movies edit
-app.get("/movies/edit", (req, res) => {});
-//movies get
-app.get("/movies/get", (req, res) => {});
-
-app.get("/movies/read/by-date", (req, res) => {
+app.get("/movies/get/by-date", (req, res) => {
   res.send({
     status: 200,
     //"the list of movies order it by year release  ",
@@ -150,7 +146,7 @@ app.get("/movies/read/by-date", (req, res) => {
   });
 });
 
-app.get("/movies/read/by-rating", (req, res) => {
+app.get("/movies/get/by-rating", (req, res) => {
   res.send({
     //the list of movies  start from hight rating
     status: 200,
@@ -158,7 +154,7 @@ app.get("/movies/read/by-rating", (req, res) => {
   });
 });
 
-app.get("/movies/read/by-title", (req, res) => {
+app.get("/movies/get/by-title", (req, res) => {
   moviestitle = movies.sort((t1, t2) => {
     //the list of movies  sort by alphabet order
 
@@ -176,7 +172,7 @@ app.get("/movies/read/by-title", (req, res) => {
   });
 });
 
-app.get("/movies/read/id/:ID", function (req, res) {
+app.get("/movies/get/id/:ID", function (req, res) {
   let { ID } = req.params;
   let movie = movies.find((item) => item.id == ID);
   let showmovie = "";
@@ -187,7 +183,7 @@ app.get("/movies/read/id/:ID", function (req, res) {
     return res.json({
       status: 404,
       error: true,
-      message: "the movie ID does not exist",
+      message: `the movie ${ID} does not exist`,
     });
   }
 });
